@@ -5,7 +5,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Master rights types (your provided list)
+// Master rights types
 const masterRightTypes = [
   {
     id: 1,
@@ -106,9 +106,10 @@ const allRights = masterRightTypes.flatMap(type =>
   }))
 );
 
-app.get('/:movieId/:rightId.json', async (req, res) => {
+// Updated route without .json
+app.get('/:movieId/:rightId', async (req, res) => {
   const { movieId, rightId } = req.params;
-  const index = parseInt(rightId.replace('.json', '')) - 1;
+  const index = parseInt(rightId) - 1; // No .json to strip, just parse directly
 
   console.log(`Fetching data for movieId: ${movieId}, rightId: ${rightId}`);
 
@@ -133,7 +134,6 @@ app.get('/:movieId/:rightId.json', async (req, res) => {
 
     const response = {
       description: movie.synopsisGenre?.synopsis,
-
       external_url: `https://producerbazaar.com/detail/${movie._id}`,
       image: movie.promotions?.moviePoster || "https://via.placeholder.com/150",
       name: movie.contentType?.content?.contentTitle || "Unknown Movie",
